@@ -1,0 +1,264 @@
+CREATE TABLE ExpenseCategories (
+    category_id INT PRIMARY KEY,
+    category_name VARCHAR(50) UNIQUE
+);
+
+
+
+INSERT INTO ExpenseCategories (category_id, category_name) VALUES (1, 'Rent');
+INSERT INTO ExpenseCategories (category_id, category_name) VALUES (2, 'Electricity');
+INSERT INTO ExpenseCategories (category_id, category_name) VALUES (3, 'Water');
+INSERT INTO ExpenseCategories (category_id, category_name) VALUES (4, 'Grocery');
+INSERT INTO ExpenseCategories (category_id, category_name) VALUES (5, 'Entertainment');
+ select * from ExpenseCategories
+
+CREATE TABLE Expenses (
+    id INT PRIMARY KEY,
+    expense_date DATE,
+    category_id INT,
+    item VARCHAR(100),
+    cost NUMBER(10,2),
+    FOREIGN KEY (category_id) REFERENCES ExpenseCategories(category_id)
+);
+
+
+INSERT INTO Expenses (id, expense_date, category_id, item, cost) VALUES (1, TO_DATE('2024-09-01', 'YYYY-MM-DD'), 1, 'Monthly Rent', 1500.00);
+INSERT INTO Expenses (id, expense_date, category_id, item, cost) VALUES (2, TO_DATE('2024-09-02', 'YYYY-MM-DD'), 2, 'Electricity Bill', 200.00);
+INSERT INTO Expenses (id, expense_date, category_id, item, cost) VALUES (3, TO_DATE('2024-09-03', 'YYYY-MM-DD'), 3, 'Water Bill', 50.00);
+INSERT INTO Expenses (id, expense_date, category_id, item, cost) VALUES (4, TO_DATE('2024-09-03', 'YYYY-MM-DD'), 4, 'Vegetables', 30.00);
+INSERT INTO Expenses (id, expense_date, category_id, item, cost) VALUES (5, TO_DATE('2024-09-03', 'YYYY-MM-DD'), 5, 'Movie Tickets', 25.00);
+INSERT INTO Expenses (id, expense_date, category_id, item, cost) VALUES (6, TO_DATE('2024-10-07', 'YYYY-MM-DD'), 5, 'Movie Tickets', 250.00);
+
+select * from expenses
+
+
+ total expenses for a day:
+
+SELECT expense_date, SUM(cost) AS total_expense_per_day FROM Expenses WHERE expense_date = TO_DATE('2024-09-02', 'YYYY-MM-DD') GROUP BY expense_date;
+----------------------------
+week:
+
+SELECT TO_CHAR(expense_date, 'IW') AS week_number, SUM(cost) AS total_expense_per_week
+FROM Expenses
+WHERE TO_CHAR(expense_date, 'YYYY') = '2024'
+  AND TO_CHAR(expense_date, 'IW') = TO_CHAR(TO_DATE('2024-09-03', 'YYYY-MM-DD'), 'IW')
+GROUP BY TO_CHAR(expense_date, 'IW');
+---------------------------------
+month:
+
+
+SELECT TO_CHAR(expense_date, 'YYYY-MM') AS year_month, SUM(cost) AS total_expenses_per_month
+FROM Expenses
+WHERE TO_CHAR(expense_date, 'YYYY') = '2024'
+GROUP BY TO_CHAR(expense_date, 'YYYY-MM')
+ORDER BY year_month;
+
+----------------
+
+-- capture details of expenses such as individual items and cost.
+
+
+SELECT ec.category_name AS category, SUM(e.cost) AS total_expense
+FROM Expenses e
+JOIN ExpenseCategories ec ON e.category_id = ec.category_id
+WHERE TO_CHAR(e.expense_date, 'YYYY') = '2024'
+  
+GROUP BY ec.category_name;
+
+---------------------------------------------------
+-----------------------------------------------
+
+
+CREATE TABLE Clients (
+    id INT PRIMARY KEY,
+    name VARCHAR(20),
+    age INT,
+    employment_status VARCHAR(100),
+    hobby VARCHAR(100)
+);
+
+INSERT INTO Clients (id, name, age, employment_status, hobby) VALUES(1, 'Ravi Kumar', 25, 'Employed', 'Reading')
+INSERT INTO Clients (id, name, age, employment_status, hobby) VALUES(2, 'Rajesh Sharma', 45, 'Employed', 'Hiking')
+INSERT INTO Clients (id, name, age, employment_status, hobby) VALUES(3, 'Anjali Verma', 30, 'Unemployed', 'Gardening')
+INSERT INTO Clients (id, name, age, employment_status, hobby) VALUES(4, 'Rohan Gupta', 20, 'Employed', 'Gaming')
+INSERT INTO Clients (id, name, age, employment_status, hobby) VALUES(5, 'Meena Patel', 42, 'Employed', 'Painting')
+INSERT INTO Clients (id, name, age, employment_status, hobby) VALUES(6, 'Rakesh Jain', 22, 'Unemployed', 'Photography')
+INSERT INTO Clients (id, name, age, employment_status, hobby) VALUES(7, 'Remya', 39, 'Unemployed', 'Photography')
+INSERT INTO Clients (id, name, age, employment_status, hobby) VALUES(8, 'Anu', 40, 'Unemployed', 'Dancing')
+
+
+CREATE TABLE MovieGenresAndFoods (
+    id INT PRIMARY KEY,
+    genre_or_food VARCHAR(100) UNIQUE
+);
+
+
+INSERT INTO MovieGenresAndFoods (id, genre_or_food) VALUES(1, 'Pizza')
+
+INSERT INTO MovieGenresAndFoods (id, genre_or_food) VALUES(2, 'Sushi')
+
+INSERT INTO MovieGenresAndFoods (id, genre_or_food) VALUES(3, 'Burgers')
+
+INSERT INTO MovieGenresAndFoods (id, genre_or_food) VALUES(4, 'Salad')
+
+INSERT INTO MovieGenresAndFoods (id, genre_or_food) VALUES(5, 'Pasta')
+
+INSERT INTO MovieGenresAndFoods (id, genre_or_food) VALUES(6, 'Hiking')
+
+
+
+CREATE TABLE ClientPreferences (
+    client_id INT,
+    genre_or_food_id INT,
+    type VARCHAR(10), -- 'MovieGenre' or 'Food'
+    FOREIGN KEY (client_id) REFERENCES Clients(id),
+    FOREIGN KEY (genre_or_food_id) REFERENCES MovieGenresAndFoods(id)
+);
+
+
+
+
+INSERT INTO ClientPreferences (client_id, genre_or_food_id, type) VALUES(1, 1, 'Food')
+
+
+INSERT INTO ClientPreferences (client_id, genre_or_food_id, type) VALUES(2, 1, 'Food')
+
+
+INSERT INTO ClientPreferences (client_id, genre_or_food_id, type) VALUES(3, 2, 'Food')
+
+
+INSERT INTO ClientPreferences (client_id, genre_or_food_id, type) VALUES(4, 3, 'Food')
+
+
+INSERT INTO ClientPreferences (client_id, genre_or_food_id, type) VALUES(5, 4, 'Food')
+
+
+INSERT INTO ClientPreferences (client_id, genre_or_food_id, type) VALUES(5, 5, 'Food')
+
+
+INSERT INTO ClientPreferences (client_id, genre_or_food_id, type) VALUES(6, 1, 'Food')
+
+
+INSERT INTO ClientPreferences (client_id, genre_or_food_id, type) VALUES(6, 3, 'Food')
+
+
+
+1.List of clients in the ascending order of their age , name starting with "R"
+
+SELECT *
+FROM Clients
+WHERE name LIKE 'R%'
+ORDER BY age ASC;
+----------------------------
+2.Identify a client who is unemployeed.
+
+SELECT *
+FROM Clients
+WHERE employment_status = 'Unemployed';
+
+
+--------------------------
+
+INSERT INTO Clients (id, name, age, employment_status)
+VALUES (12, 'Suresh Mehta', 25, 'Employed');
+
+
+INSERT INTO ClientPreferences (client_id, genre_or_food_id, type)
+VALUES (12, 1, 'Food');  
+
+INSERT INTO ClientPreferences (client_id, genre_or_food_id, type)
+VALUES (12, 8, 'MovieGenre'); 
+
+
+3.Identify the client who is above 40 years and loves "horror" movies and love "pizza".
+
+
+SELECT C.name, C.age,
+       'Romantic' AS movie_genre,
+       'Pizza' AS favorite_food
+FROM Clients C
+JOIN ClientPreferences CP1 ON C.id = CP1.client_id
+JOIN MovieGenresAndFoods MG1 ON CP1.genre_or_food_id = MG1.id
+WHERE C.age > 20
+AND (CP1.type = 'Food' AND MG1.genre_or_food = 'Pizza')
+AND EXISTS (
+    SELECT 1
+    FROM ClientPreferences CP2
+    JOIN MovieGenresAndFoods MG2 ON CP2.genre_or_food_id = MG2.id
+    WHERE CP2.client_id = C.id
+    AND CP2.type = 'MovieGenre'
+    AND MG2.genre_or_food = 'Romantic'
+);
+---------------------------
+
+4.Show the hobby that most client prefered.
+
+SELECT hobby, preference_count
+FROM (
+    SELECT hobby, COUNT(*) AS preference_count
+    FROM Clients
+    GROUP BY hobby
+    ORDER BY preference_count DESC
+)
+WHERE ROWNUM = 1;
+
+-----------------------
+
+5.List of all clients who has more than one favourite food.
+
+SELECT C.id, C.name, C.age, C.employment_status, C.hobby, LISTAGG(MG.genre_or_food, ', ') WITHIN GROUP (ORDER BY MG.genre_or_food) AS favorite_foods
+FROM Clients C
+JOIN ClientPreferences CP ON C.id = CP.client_id
+JOIN MovieGenresAndFoods MG ON CP.genre_or_food_id = MG.id
+WHERE CP.type = 'Food'
+GROUP BY C.id, C.name, C.age, C.employment_status, C.hobby
+HAVING COUNT(DISTINCT MG.genre_or_food) > 1;
+
+------------------------------------
+
+6.Identify a client whose hobby is unique  amoung the clients
+
+SELECT *
+FROM Clients
+WHERE hobby IN (
+    SELECT hobby
+    FROM Clients
+    GROUP BY hobby
+    HAVING COUNT(*) = 1
+);
+
+---------------------------
+
+INSERT INTO MovieGenresAndFoods (id, genre_or_food)
+VALUES (8, 'Romantic');
+
+
+INSERT INTO ClientPreferences (client_id, genre_or_food_id, type)
+VALUES (12, 1, 'Food');
+
+
+INSERT INTO ClientPreferences (client_id, genre_or_food_id, type)
+VALUES (12, 8, 'MovieGenre');
+
+
+
+7.Identify the client who is above 20 years and loves "romantic " movies and love "pizza" 
+
+SELECT C.name, C.age,
+       'Romantic' AS movie_genre,
+       'Pizza' AS favorite_food
+FROM Clients C
+JOIN ClientPreferences CP1 ON C.id = CP1.client_id
+JOIN MovieGenresAndFoods MG1 ON CP1.genre_or_food_id = MG1.id
+WHERE C.age > 20
+AND (CP1.type = 'Food' AND MG1.genre_or_food = 'Pizza')
+AND EXISTS (
+    SELECT 1
+    FROM ClientPreferences CP2
+    JOIN MovieGenresAndFoods MG2 ON CP2.genre_or_food_id = MG2.id
+    WHERE CP2.client_id = C.id
+    AND CP2.type = 'MovieGenre'
+    AND MG2.genre_or_food = 'Romantic'
+);
+
+--------------------------
